@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinic assistant demo</title>
+<style>
+  :root { --bg:#f6f8f7; --card:#ffffff; --text:#14231c; --muted:#5d6b64; --line:#d9e2dd;
+          --accent:#1f7a54; --warn:#9a5b00; --bad:#a32e2e; --user:#e3f1ea; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1713; --card:#16211b; --text:#e6efe9; --muted:#93a39a; --line:#26372e;
+            --accent:#46c08a; --warn:#e0a84a; --bad:#e57373; --user:#1d3328; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+         background:var(--bg); color:var(--text); }
+  main { max-width:720px; margin:0 auto; padding:24px 16px 40px; }
+  h1 { font-size:1.3rem; margin:0 0 4px; }
+  p.sub { margin:0 0 16px; color:var(--muted); font-size:.9rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  label { font-size:.85rem; color:var(--muted); }
+  input, button { font:inherit; border-radius:8px; border:1px solid var(--line);
+                  background:var(--card); color:var(--text); padding:8px 12px; }
+  input { flex:1; min-width:180px; }
+  button { cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.active { outline:2px solid var(--accent); }
+  #log { min-height:220px; max-height:50vh; overflow-y:auto; display:flex; flex-direction:column;
+         gap:10px; margin:12px 0; }
+  .msg { padding:10px 12px; border-radius:10px; border:1px solid var(--line); max-width:90%; }
+  .msg.user { background:var(--user); align-self:flex-end; }
+  .msg.bot { align-self:flex-start; }
+  .meta { margin-top:6px; font-size:.78rem; color:var(--muted); }
+  .tag { font-weight:600; }
+  .tag.answered { color:var(--accent); } .tag.no_answer { color:var(--warn); }
+  .tag.handover { color:var(--bad); } .tag.error { color:var(--bad); }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .chips button { font-size:.8rem; padding:4px 10px; color:var(--muted); }
+  .note { font-size:.78rem; color:var(--muted); margin-top:12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Clinic assistant demo</h1>
+  <p class="sub">Fictional data only. English or Kiswahili. Each clinic can only see its own documents.</p>
+  <div class="card">
+    <div class="row" id="demo-row" hidden>
+      <label>Demo clinic:</label>
+      <button type="button" id="pick-a">Clinic A</button>
+      <button type="button" id="pick-b">Clinic B</button>
+    </div>
+    <div class="row">
+      <label for="key">API key</label>
+      <input id="key" type="password" autocomplete="off" placeholder="X-API-Key">
+    </div>
+    <div id="log" aria-live="polite"></div>
+    <form id="form" class="row" style="margin-bottom:0">
+      <input id="q" type="text" maxlength="500" placeholder="Ask a question..." autocomplete="off">
+      <button class="primary" type="submit">Ask</button>
+    </form>
+    <div class="chips" id="chips"></div>
+    <p class="note">Status labels: <b>answered</b> (from an approved document), <b>no_answer</b>
+      (not in this clinic's documents), <b>handover</b> (medical advice is out of scope).</p>
+  </div>
+</main>
+<script>
+const DEMO_KEYS = __DEMO_KEYS__;
+const SAMPLES = [
+  "Mnafungua saa ngapi Jumamosi?",
+  "How do I book an appointment?",
+  "Do you offer dental services?",
+  "What dose of paracetamol should I give my child?"
+];
+const keyEl = document.getElementById("key");
+const log = document.getElementById("log");
+const qEl = document.getElementById("q");
+
+function add(kind, text, meta, status) {
+  const div = document.createElement("div");
+  div.className = "msg " + kind;
+  const body = document.createElement("div");
+  body.textContent = text;
+  div.appendChild(body);
+  if (meta || status) {
+    const m = document.createElement("div");
+    m.className = "meta";
+    if (status) {
+      const t = document.createElement("span");
+      t.className = "tag " + status;
+      t.textContent = status;
+      m.appendChild(t);
+    }
+    if (meta) m.appendChild(document.createTextNode(meta));
+    div.appendChild(m);
+  }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function pick(which) {
+  keyEl.value = DEMO_KEYS[which];
+  document.getElementById("pick-a").classList.toggle("active", which === "clinic_a");
+  document.getElementById("pick-b").classList.toggle("active", which === "clinic_b");
+  log.textContent = "";
+  add("bot", "Connected as " + (which === "clinic_a" ? "Clinic A" : "Clinic B") + ". Ask a question.");
+}
+
+if (Object.keys(DEMO_KEYS).length) {
+  document.getElementById("demo-row").hidden = false;
+  document.getElementById("pick-a").onclick = () => pick("clinic_a");
+  document.getElementById("pick-b").onclick = () => pick("clinic_b");
+  pick("clinic_a");
+}
+
+SAMPLES.forEach(s => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = s;
+  b.onclick = () => { qEl.value = s; qEl.focus(); };
+  document.getElementById("chips").appendChild(b);
+});
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const question = qEl.value.trim();
+  if (question.length < 2) return;
+  add("user", question);
+  qEl.value = "";
+  try {
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-API-Key": keyEl.value },
+      body: JSON.stringify({ question })
+    });
+    if (!res.ok) {
+      add("bot", res.status === 401 ? "Invalid or missing API key." : "Request failed (" + res.status + ").", "", "error");
+      return;
+    }
+    const data = await res.json();
+    const src = data.sources.length ? " source: " + data.sources[0].title + " (" + data.sources[0].id + ")" : "";
+    add("bot", data.answer, " " + src + " | index " + data.index_version, data.status);
+  } catch (err) {
+    add("bot", "Could not reach the server.", "", "error");
+  }
+});
+</script>
+</body>
+</html>

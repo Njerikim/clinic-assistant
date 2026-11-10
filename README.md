@@ -42,3 +42,8 @@ it did not help. Next steps, in order:
 ## Limits
 Fictional data, tiny corpus, Kiswahili text needs review by a native speaker, no rate limiting,
 keys come from env vars rather than a secrets manager, the Ollama path is not tested here.
+
+## Demo page
+`GET /` serves a single-file chat page (no build step). It shows the answer, status and source for
+each question. The built-in demo keys are shown only when the demo keys are active; with real
+`TENANT_KEYS` you type the key in yourself. API docs remain at `/docs`.

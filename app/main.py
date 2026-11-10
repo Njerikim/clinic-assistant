@@ -4,7 +4,10 @@ import time
 from pathlib import Path
 from typing import Literal
 
+import json
+
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from . import config
@@ -67,6 +70,15 @@ def create_app(data_dir: Path | None = None, keys: dict | None = None,
         if found is None:
             raise HTTPException(status_code=401, detail="Invalid API key")
         return found
+
+    page = (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+    # Only the built-in demo keys are ever shown in the page; real keys are typed in by the user.
+    demo = {t: k for k, t in keys.items()} if keys == config.DEMO_KEYS else {}
+    page = page.replace("__DEMO_KEYS__", json.dumps(demo))
+
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    def home():
+        return page
 
     @app.get("/health")
     def health():

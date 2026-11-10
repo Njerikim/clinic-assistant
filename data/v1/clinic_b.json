@@ -1,0 +1,12 @@
+[
+ {"id":"b1","title":"Opening hours","en":"We are open Monday to Saturday from 7:30 to 19:00. On Sundays we open from 10:00 to 14:00 for urgent visits only.","sw":"Tunafunguliwa Jumatatu hadi Jumamosi kuanzia saa 7:30 hadi 19:00. Jumapili tunafunguliwa saa 10:00 hadi 14:00 kwa wagonjwa wa dharura pekee."},
+ {"id":"b2","title":"Booking an appointment","en":"Book through the form on our website or at the reception desk. You will receive an SMS to confirm your appointment.","sw":"Panga miadi kupitia fomu kwenye tovuti yetu au kwenye dawati la mapokezi. Utapokea ujumbe mfupi wa SMS kuthibitisha miadi yako."},
+ {"id":"b3","title":"What to bring","en":"Bring your national ID and insurance card. If another facility referred you, bring the referral letter.","sw":"Leta kitambulisho cha taifa na kadi ya bima. Ikiwa umetumwa na kituo kingine, leta barua ya rufaa."},
+ {"id":"b4","title":"Dental services","en":"Dental services are available on Mondays and Fridays by appointment only.","sw":"Huduma za meno zinapatikana Jumatatu na Ijumaa kwa miadi pekee."},
+ {"id":"b5","title":"Payment","en":"We accept cash and M-Pesa. Insurance direct billing is not available for dental services.","sw":"Tunapokea pesa taslimu na M-Pesa. Bima haitumiki moja kwa moja kwa huduma za meno."},
+ {"id":"b6","title":"Lab results","en":"Malaria and blood sugar test results are ready the same day. Other lab results take up to 3 days.","sw":"Matokeo ya vipimo vya malaria na sukari huwa tayari siku hiyo hiyo. Matokeo mengine huchukua hadi siku 3."},
+ {"id":"b7","title":"Family planning clinic","en":"The family planning clinic runs on Thursdays from 10:00 to 15:00.","sw":"Kliniki ya uzazi wa mpango hufanyika Alhamisi kuanzia saa 10:00 hadi 15:00."},
+ {"id":"b8","title":"Access and parking","en":"The clinic has a wheelchair ramp and free parking for patients.","sw":"Zahanati ina njia ya kuingia kwa viti vya magurudumu na maegesho ya bure kwa wagonjwa."},
+ {"id":"b9","title":"Visitors","en":"Each patient may have two visitors, between 16:00 and 18:00.","sw":"Kila mgonjwa anaruhusiwa wageni wawili, kati ya saa 16:00 na 18:00."},
+ {"id":"b10","title":"Cancelling or rescheduling","en":"Please cancel or reschedule at least 12 hours before your appointment.","sw":"Tafadhali ghairi au badilisha miadi yako angalau saa 12 kabla ya wakati wake."}
+]
